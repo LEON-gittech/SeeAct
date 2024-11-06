@@ -42,6 +42,26 @@ To be successful, it is important to follow the following rules:
 1. You should only issue a valid action given the current observation. 
 2. You should only issue one action at a time'''
 
+question_description_new_exp5 = '''The screenshot below shows the webpage you see. Follow the following guidance to think step by step before outlining the next action step at the current stage:
+
+(Current Webpage Identification)
+Firstly, think about what the current webpage is.
+
+(Previous Action Analysis)
+Secondly, combined with the screenshot, analyze each step of the previous action history and their intention one by one. Particularly, pay more attention to the last step, which may be more related to what you should do now as the next step.
+
+(Screenshot Details Analysis)
+Closely examine the screenshot to check the status of every part of the webpage to understand what you can operate with and what has been set or completed. You should closely examine the screenshot details to see what steps have been completed by previous actions even though you are given the textual previous actions. Because the textual history may not clearly and sufficiently record some effects of previous actions, you should closely evaluate the status of every part of the webpage to understand what you have done.
+
+Next Action Hint: {action_hint}
+
+(Next Action Based on Webpage, Analysis and Action Hint)
+Then, based on your analysis and the action hint, in conjunction with human web browsing habits and the logic of web design, decide on the following action. And clearly outline which element in the webpage users will operate with as the first next target element, its detailed location, and the corresponding operation.
+
+To be successful, it is important to follow the following rules: 
+1. You should only issue a valid action given the current observation. 
+2. You should only issue one action at a time'''
+
 question_description_new_exp2 = '''The screenshot below shows the webpage you see. In the screenshot, some red bounding boxes and white-on-black uppercase letters at the bottom left corner of the bounding boxes have been manually added. You should ignore them for now. Follow the following guidance to think step by step before outlining the next action step at the current stage:
 
 (Current Webpage Identification)

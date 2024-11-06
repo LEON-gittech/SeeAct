@@ -106,7 +106,7 @@ def generate_query_prompt(system_prompt="", task="", previous_actions=None, ques
     return query_text
 
 
-def generate_new_query_prompt(system_prompt="", task="", previous_actions=None, question_description=""):
+def generate_new_query_prompt(system_prompt="", task="", previous_actions=None, question_description="", pred_action=""):
     """
     Generate the first phase prompt to ask model to generate general descriptions about {environment, high-level plans, next step action}
     Each experiment will have a similar prompt in this phase
@@ -134,6 +134,9 @@ def generate_new_query_prompt(system_prompt="", task="", previous_actions=None, 
 
     # Question Description
     query_text += question_description
+    
+    # if pred_action != "":
+    #     query_text += f"\n\n Action Hint: {pred_action} Based on the action hint predict the next action."
     return [sys_role,query_text]
 
 def generate_referring_prompt(referring_description="", element_format="", action_format="", value_format="",

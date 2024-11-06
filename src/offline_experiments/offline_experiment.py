@@ -1,4 +1,12 @@
-﻿# -*- coding: utf-8 -*-
+﻿'''
+Author: LEON leon.kepler@bytedance.com
+Date: 2024-10-30 20:46:49
+LastEditors: LEON leon.kepler@bytedance.com
+LastEditTime: 2024-11-04 22:12:21
+FilePath: /Mind2Web/SeeAct/src/offline_experiments/offline_experiment.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
+# -*- coding: utf-8 -*-
 # Copyright (c) 2024 OSU Natural Language Processing Group
 #
 # Licensed under the OpenRAIL-S License;
@@ -12,7 +20,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import sys
+sys.path.append("/Users/bytedance/workspace/Mind2Web/SeeAct")
 from src.data_utils.prompts import generate_prompt
 import json
 import jsonlines
@@ -22,7 +31,6 @@ from src.demo_utils.inference_engine import OpenaiEngine
 
 generation_model = OpenaiEngine(
     rate_limit=-1,
-    api_key="Your API Key",
 )
 
 exp_split = "text_choice"
@@ -58,8 +66,7 @@ for action_file in os.listdir(source_data_path):
             choices_input = query['choices']
         except:
             pass
-        prompt_list = generate_prompt(exp_split, task=query['confirmed_task'], previous=query['previous_actions'],
-                                      choices=choices_input)
+        prompt_list = generate_prompt(exp_split, task=query['confirmed_task'], previous=query['previous_actions'], choices=choices_input)
         print("-" * 10)
         print(prompt_list[0])
         print(prompt_list[1])

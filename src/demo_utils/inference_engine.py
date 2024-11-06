@@ -89,7 +89,7 @@ class OpenaiEngine(Engine):
         (APIError, RateLimitError, APIConnectionError),
     )
     def generate(self, prompt: list = None, max_new_tokens=4096, temperature=None, model=None, image_path=None,
-                 ouput__0=None, turn_number=0, **kwargs):
+                 ouput__0=None, turn_number=0, is_choose=False, **kwargs):
         self.current_key_idx = (self.current_key_idx + 1) % len(self.api_keys)
         start_time = time.time()
         if (
@@ -112,9 +112,9 @@ class OpenaiEngine(Engine):
                 {"role": "system", "content": [{"type": "text", "text": prompt0}]},
                 {"role": "user",
                  "content": [{"type": "text", "text": prompt1}, {"type": "image_url", "image_url": {"url":
-                                                                                                        f"data:image/jpeg;base64,{base64_image}",
-                                                                                                    "detail": "high"},
-                                                                 }]},
+                    f"data:image/jpeg;base64,{base64_image}",
+                "detail": "high"},
+                }]},
             ]
             response1 = self.client.chat.completions.create(
                 model=model if model else self.model,
@@ -128,14 +128,44 @@ class OpenaiEngine(Engine):
             return answer1
         elif turn_number == 1:
             base64_image = encode_image(image_path)
-            prompt2_input = [
+            if is_choose:
+                prompt2_input = [
+                    {"role": "system", "content": [{"type": "text", "text": prompt0}]},
+                    {"role": "user",
+                    "content": [{"type": "text", "text": prompt1}, ]},
+                    # {"type": "image_url", "image_url": {"url":
+                    #             f"data:image/jpeg;base64,{base64_image}",
+                    #         "detail": "high"}, 
+                    # }
+                    {"role": "assistant", "content": [{"type": "text", "text": f"\n\n{ouput__0}"}]},
+                    {"role": "user", "content": [{"type": "text", "text": prompt2}]}, ]
+                # + "\nRequirement: You should only select one element from the given choices."
+            else:
+                prompt2_input = [
+                    {"role": "system", "content": [{"type": "text", "text": prompt0}]},
+                    {"role": "user",
+                    "content": [{"type": "text", "text": prompt1}, ]},
+                    # {"role": "user",
+                    # "content": [{"type": "text", "text": prompt1}, {"type": "image_url", "image_url": {"url":
+                    #             f"data:image/jpeg;base64,{base64_image}",
+                    #         "detail": "high"}, 
+                    # }]},
+                    {"role": "assistant", "content": [{"type": "text", "text": f"\n\nNext Action: {ouput__0}"}]},
+                    {"role": "user", "content": [{"type": "text", "text": prompt2 + "\nRequirement: You answer should align with the predicted next action even you can't find this element in the image."}]}, ]
+                    
+            prompt2_tmp = [
                 {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                {"role": "user",
-                 "content": [{"type": "text", "text": prompt1}, {"type": "image_url", "image_url": {"url":
-                                                                                                        f"data:image/jpeg;base64,{base64_image}",
-                                                                                                    "detail": "high"}, }]},
-                {"role": "assistant", "content": [{"type": "text", "text": f"\n\n{ouput__0}"}]},
-                {"role": "user", "content": [{"type": "text", "text": prompt2}]}, ]
+                
+                {"role": "user", "content": [
+                    {"type": "text", "text": prompt1},
+                    # image_url部分省略
+                ]},
+                
+                {"role": "assistant", "content": [{"type": "text", "text": f"\n\nNext Action: {ouput__0}"}]},
+                
+                {"role": "user", "content": [{"type": "text", "text": prompt2}]}
+            ]
+            # print(f"prompt2_input {prompt2_input}")
             response2 = self.client.chat.completions.create(
                 model=model if model else self.model,
                 messages=prompt2_input,
